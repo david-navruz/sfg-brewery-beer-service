@@ -11,11 +11,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-/**
- * Created by jt on 2019-05-17.
- */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -47,7 +43,7 @@ public class Beer {
 
     private BigDecimal price;
 
-    private Integer minOnHand;
+    private Integer minimumInStock;
     private Integer quantityToBrew;
 
 

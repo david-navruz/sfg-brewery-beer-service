@@ -1,15 +1,12 @@
 package com.udemy.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
-import javax.validation.constraints.Positive;
-import java.io.Serializable;
+
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -18,38 +15,28 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class BeerDto implements Serializable {
+public class BeerOrderLineDto {
 
-    static final long serialVersionUID = -5815566940065181210L;
+    @JsonProperty("id")
+    private UUID id = null;
 
-    @Null
-    private UUID id;
+    @JsonProperty("version")
+    private Integer version = null;
 
-    @Null
-    private Integer version;
-
-    @Null
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", shape = JsonFormat.Shape.STRING)
+    @JsonProperty("createdDate")
     private OffsetDateTime createdDate;
 
-    @Null
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", shape = JsonFormat.Shape.STRING)
+    @JsonProperty("lastModifiedDate")
     private OffsetDateTime lastModifiedDate;
 
-    @NotBlank
+    private String upc;
     private String beerName;
-
-    @NotNull
     private BeerStyleEnum beerStyle;
-
-    @NotNull
-    private Long upc;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @Positive
-    @NotNull
+    private UUID beerId;
+    private Integer orderQuantity = 0;
     private BigDecimal price;
-    private Integer quantityInStock;
 
 
 }
