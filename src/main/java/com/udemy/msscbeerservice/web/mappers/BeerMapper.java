@@ -16,3 +16,8 @@ public interface BeerMapper {
     Beer beerDtoToBeer(BeerDto dto);
 
 }
+
+/**
+ * MapStruct, which is, simply put, a Java Bean mapper.
+ * Dto to Entity, Entity to Dto Mapper
+ */
