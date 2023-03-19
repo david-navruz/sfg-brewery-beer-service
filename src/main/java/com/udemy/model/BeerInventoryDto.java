@@ -1,4 +1,4 @@
-package com.udemy.msscbeerservice.services.inventory.model;
+package com.udemy.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,7 +1,7 @@
 package com.udemy.msscbeerservice.services.inventory;
 
 import com.udemy.msscbeerservice.config.FeignClientConfig;
-import com.udemy.msscbeerservice.services.inventory.model.BeerInventoryDto;
+import com.udemy.model.BeerInventoryDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -1,6 +1,6 @@
 package com.udemy.msscbeerservice.services.inventory;
 
-import com.udemy.msscbeerservice.services.inventory.model.BeerInventoryDto;
+import com.udemy.model.BeerInventoryDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,6 +1,6 @@
 package com.udemy.msscbeerservice.services.inventory;
 
-import com.udemy.msscbeerservice.services.inventory.model.BeerInventoryDto;
+import com.udemy.model.BeerInventoryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
