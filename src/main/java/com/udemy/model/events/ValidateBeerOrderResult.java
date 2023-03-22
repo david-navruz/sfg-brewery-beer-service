@@ -1,18 +1,20 @@
 package com.udemy.model.events;
 
-import com.udemy.model.BeerOrderDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ValidateOrderRequest {
+public class ValidateBeerOrderResult {
 
-    private BeerOrderDto beerOrderDto;
+    private UUID orderId;
+    private Boolean isValid;
 
 
 }

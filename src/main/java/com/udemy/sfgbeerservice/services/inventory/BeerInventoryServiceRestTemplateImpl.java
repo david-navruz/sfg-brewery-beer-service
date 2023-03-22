@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-@Profile("!local-discovery")
+@Profile("!local-discovery & !digitalocean")
 @Slf4j
 @ConfigurationProperties(prefix = "sfg.brewery", ignoreInvalidFields = true)
 @Component
@@ -52,6 +52,7 @@ public class BeerInventoryServiceRestTemplateImpl implements BeerInventoryServic
         Integer inStock = Objects.requireNonNull(responseEntity.getBody())
                 .stream().mapToInt(BeerInventoryDto::getQuantityOnHand)
                 .sum();
+        log.debug("BeerId: " + beerId + " On hand is: " + inStock);
         return inStock;
     }
 

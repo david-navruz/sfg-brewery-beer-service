@@ -27,12 +27,12 @@ public class BrewBeerListener {
     public void listen(BrewBeerEvent brewBeerEvent) {
         BeerDto beerDto = brewBeerEvent.getBeerDto();   // getting the BeerDto from the event
         Beer beer = beerRepository.getOne(beerDto.getId()); // getting the Beer entity from the db
+        beerDto.setQuantityInStock(beer.getQuantityToBrew()); //Brewing some beer
         NewInventoryEvent newInventoryEvent = new NewInventoryEvent(beerDto);   // creating a new inventory event
 
-        log.debug("Brewed beer " + beer.getMinimumInStock() +", QOH: " +beerDto.getQuantityInStock());
+        log.debug("Brewed beer " + beer.getMinimumInStock() +", QOH: " + beerDto.getQuantityInStock());
         jmsTemplate.convertAndSend(JmsConfig.NEW_INVENTORY_QUEUE, newInventoryEvent); // sending a message to the new inventory jms queue
     }
-
 
 
 }
