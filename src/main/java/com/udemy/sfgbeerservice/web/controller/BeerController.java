@@ -10,8 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -55,25 +61,47 @@ public class BeerController {
         if(showInventoryOnHand == null) {
             showInventoryOnHand = false;
         }
-        return new ResponseEntity<>(beerService.getById(beerId, showInventoryOnHand), HttpStatus.OK);
+        return new ResponseEntity<>(beerService.findBeerById(beerId, showInventoryOnHand), HttpStatus.OK);
     }
 
 
     @PostMapping(path = "beer")
-    public ResponseEntity saveNewBeer(@RequestBody @Validated BeerDto beerDto) {
-        return new ResponseEntity(beerService.saveNewBeer(beerDto), HttpStatus.CREATED);
+    public ResponseEntity saveNewBeer(@Valid @RequestBody BeerDto beerDto){
+        BeerDto savedDto = beerService.saveNewBeer(beerDto);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        //todo hostname for uri
+        httpHeaders.add("Location", "/api/v1/beer_service/" + savedDto.getId().toString());
+        return new ResponseEntity(httpHeaders, HttpStatus.CREATED);
     }
 
 
-    @PutMapping("beer/{beerId}")
+    @PutMapping(path = {"beer/{beerId}"}, produces = { "application/json" })
     public ResponseEntity updateBeer(@PathVariable("beerId") @NotNull UUID beerId, @RequestBody @Validated BeerDto beerDto) {
-        return new ResponseEntity(beerService.updateBeer(beerId, beerDto), HttpStatus.NO_CONTENT);
+        beerService.updateBeer(beerId, beerDto);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
 
     @GetMapping("beerUpc/{upc}")
     public ResponseEntity<BeerDto> getBeerByUpc(@PathVariable("upc") String upc){
-        return new ResponseEntity<>(beerService.getByUpc(upc), HttpStatus.OK);
+        return new ResponseEntity<>(beerService.findBeerByUpc(upc), HttpStatus.OK);
+    }
+
+    @DeleteMapping({"beer/{beerId}"})
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteBeer(@PathVariable("beerId") UUID beerId){
+        beerService.deleteById(beerId);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ResponseEntity<List> badReqeustHandler(ConstraintViolationException e){
+        List<String> errors = new ArrayList<>(e.getConstraintViolations().size());
+
+        e.getConstraintViolations().forEach(constraintViolation -> {
+            errors.add(constraintViolation.getPropertyPath().toString() + " : " + constraintViolation.getMessage());
+        });
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
 }

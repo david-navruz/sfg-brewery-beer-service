@@ -4,6 +4,7 @@ import com.udemy.model.BeerDto;
 import com.udemy.sfgbeerservice.domain.Beer;
 import com.udemy.sfgbeerservice.services.inventory.BeerInventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 
 public abstract class BeerMapperDecorator implements BeerMapper {
@@ -17,23 +18,16 @@ public abstract class BeerMapperDecorator implements BeerMapper {
     }
 
     @Autowired
+    @Qualifier("delegate")
     public void setMapper(BeerMapper mapper) {
         this.mapper = mapper;
     }
 
-
-    @Override
-    public BeerDto beerToBeerDto(Beer beer) {
-        return null;
-    }
-
     @Override
     public BeerDto beerToBeerDtoWithInventory(Beer beer) {
-        return null;
+        BeerDto beerDto = mapper.beerToBeerDto(beer);
+        beerDto.setQuantityInStock(beerInventoryService.getInStockInventory(beer.getId()));
+        return beerDto;
     }
 
-    @Override
-    public Beer beerDtoToBeer(BeerDto dto) {
-        return null;
-    }
 }
