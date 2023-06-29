@@ -20,12 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/** @Validated is used for method level validation
+ * Annotate the method parameter(s) that you want to validate with the @Validated annotation
+ */
+@Validated
 @RequiredArgsConstructor
 @RequestMapping("api/v1/beer")
 @RestController
 public class BeerController {
 
-    private String baseUrl = "/api/v1/beer/";
     private static final Integer DEFAULT_PAGE_NUMBER = 0;
     private static final Integer DEFAULT_PAGE_SIZE = 25;
 

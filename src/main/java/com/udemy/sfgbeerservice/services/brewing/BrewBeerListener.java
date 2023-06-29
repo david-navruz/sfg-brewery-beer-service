@@ -13,6 +13,7 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,11 +27,13 @@ public class BrewBeerListener {
     @JmsListener(destination = JmsConfig.BREWING_REQUEST_QUEUE)
     public void listen(BrewBeerEvent brewBeerEvent) {
         BeerDto beerDto = brewBeerEvent.getBeerDto();   // getting the BeerDto from the event
-        Beer beer = beerRepository.getOne(beerDto.getId()); // getting the Beer entity from the db
-        beerDto.setQuantityInStock(beer.getQuantityToBrew()); //Brewing some beer
-        NewInventoryEvent newInventoryEvent = new NewInventoryEvent(beerDto);   // creating a new inventory event
+        Optional<Beer> beer = beerRepository.findById(beerDto.getId());   // getting the Beer entity from the db
+            if (beer.isPresent()) {
+                beerDto.setQuantityInStock(beer.get().getQuantityToBrew()); //Brewing some beer
+                log.debug("Brewed beer " + beer.get().getMinimumInStock() +", QOH: " + beerDto.getQuantityInStock());
+            }
 
-        log.debug("Brewed beer " + beer.getMinimumInStock() +", QOH: " + beerDto.getQuantityInStock());
+        NewInventoryEvent newInventoryEvent = new NewInventoryEvent(beerDto);   // creating a new inventory event
         jmsTemplate.convertAndSend(JmsConfig.NEW_INVENTORY_QUEUE, newInventoryEvent); // sending a message to the new inventory jms queue
     }
 
