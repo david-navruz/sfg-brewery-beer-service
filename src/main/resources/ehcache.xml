@@ -18,4 +18,5 @@
             <offheap unit="MB">1</offheap>
         </resources>
     </cache-template>
+
 </config>
