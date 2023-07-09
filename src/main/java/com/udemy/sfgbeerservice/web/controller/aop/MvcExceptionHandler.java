@@ -10,7 +10,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * The@ControllerAdvice annotation allows us to consolidate our multiple,
+ * scattered @ExceptionHandlers from before into a single, global error handling component.
+ * The actual mechanism is extremely simple but also very flexible:
+ * It gives us full control over the body of the response as well as the status code.
+ */
 @Slf4j
 @ControllerAdvice
 public class MvcExceptionHandler {
@@ -35,9 +40,3 @@ public class MvcExceptionHandler {
 
 
 }
-
-/**
- * The@ControllerAdvice annotation allows us to consolidate our multiple, scattered @ExceptionHandlers from before into a single, global error handling component.
- * The actual mechanism is extremely simple but also very flexible:
- * It gives us full control over the body of the response as well as the status code.
- */
