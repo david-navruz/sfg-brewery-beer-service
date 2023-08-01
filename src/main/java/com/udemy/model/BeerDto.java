@@ -49,6 +49,7 @@ public class BeerDto implements Serializable {
     @Positive
     @NotNull
     private BigDecimal price;
+
     private Integer quantityInStock;
 
 

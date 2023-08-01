@@ -6,8 +6,6 @@ import com.udemy.sfgbeerservice.repositories.*;
 import com.udemy.model.BeerStyleEnum;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 

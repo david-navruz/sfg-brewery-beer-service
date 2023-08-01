@@ -1,5 +1,6 @@
 package com.udemy.sfgbeerservice.controller;
 
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.reset;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.udemy.sfgbeerservice.bootstrap.BeerLoader;
@@ -28,9 +29,9 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@ExtendWith(SpringExtension.class)
-@WebMvcTest(controllers = BeerController.class)
-public class BeerControllerTest {
+
+@WebMvcTest(BeerController.class)
+class BeerControllerTestV2 {
 
     @Autowired
     MockMvc mockMvc;
@@ -41,59 +42,27 @@ public class BeerControllerTest {
     @MockBean
     BeerService beerService;
 
-    private String baseUrl = "/api/v1/beer/";
-
-
-    BeerDto beerDto;
-    BeerDto validBeer;
-    BeerDto validReturnBeer;
-
-
-    @BeforeEach
-    void setUp() {
-        validBeer = BeerDto.builder()
-                .beerName("Beer1")
-                .beerStyle(BeerStyleEnum.PALE_ALE)
-                .price(new BigDecimal("12.99"))
-                .quantityInStock(4)
-                .upc(Long.valueOf(BeerLoader.BEER_1_UPC))
-                .build();
-
-        validReturnBeer = BeerDto.builder()
-                .id(UUID.randomUUID())
-                .version(1)
-                .beerName("Beer1")
-                .beerStyle(BeerStyleEnum.PALE_ALE)
-                .price(new BigDecimal("12.99"))
-                .quantityInStock(4)
-                .upc(Long.valueOf(BeerLoader.BEER_1_UPC))
-                .createdDate(OffsetDateTime.now())
-                .lastModifiedDate(OffsetDateTime.now())
-                .build();
-    }
-
-    @AfterEach
-    void tearDown() {
-        reset(beerService);
-    }
-
     @Test
     void getBeerById() throws Exception {
-        mockMvc.perform(get(baseUrl + UUID.randomUUID().toString())
-                .accept(MediaType.APPLICATION_JSON))
+
+        given(beerService.findBeerById(any(), anyBoolean())).willReturn(getValidBeerDto());
+
+        mockMvc.perform(get("/api/v1/beer/" + UUID.randomUUID().toString()).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+
     }
 
     @Test
     void saveNewBeer() throws Exception {
-        BeerDto beerDto1 = getValidBeerDto();
-        String beerDtoToJson = objectMapper.writeValueAsString(beerDto1);
+
+        BeerDto beerDto = getValidBeerDto();
+        String beerDtoJson = objectMapper.writeValueAsString(beerDto);
 
         given(beerService.saveNewBeer(any())).willReturn(getValidBeerDto());
 
         mockMvc.perform(post("/api/v1/beer/")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(beerDtoToJson))
+                        .content(beerDtoJson))
                 .andExpect(status().isCreated());
     }
 
@@ -101,30 +70,21 @@ public class BeerControllerTest {
     void updateBeerById() throws Exception {
         given(beerService.updateBeer(any(), any())).willReturn(getValidBeerDto());
 
-        BeerDto beerDto1 = getValidBeerDto();
-        String beerDtoToJson = objectMapper.writeValueAsString(beerDto1);
+        BeerDto beerDto = getValidBeerDto();
+        String beerDtoJson = objectMapper.writeValueAsString(beerDto);
 
-        mockMvc.perform(put(baseUrl + UUID.randomUUID().toString())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(beerDtoToJson))
+        mockMvc.perform(put("/api/v1/beer/" + UUID.randomUUID().toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(beerDtoJson))
                 .andExpect(status().isNoContent());
     }
 
-
-    // helper method
-    BeerDto getValidBeerDto() {
+    BeerDto getValidBeerDto(){
         return BeerDto.builder()
-                .beerName("Efes")
+                .beerName("My Beer")
                 .beerStyle(BeerStyleEnum.ALE)
                 .price(new BigDecimal("2.99"))
                 .upc(Long.valueOf(BeerLoader.BEER_1_UPC))
                 .build();
     }
-
-    BeerDto getInvalidBeerDto(){
-        return BeerDto.builder().beerName("").upc(null).build();
-
-    }
-
-
 }

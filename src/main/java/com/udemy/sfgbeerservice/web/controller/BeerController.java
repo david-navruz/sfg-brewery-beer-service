@@ -25,8 +25,8 @@ import java.util.UUID;
  */
 @Validated
 @RequiredArgsConstructor
-@RequestMapping("api/v1/beer")
 @RestController
+@RequestMapping("/api/v1/")
 public class BeerController {
 
     private static final Integer DEFAULT_PAGE_NUMBER = 0;
