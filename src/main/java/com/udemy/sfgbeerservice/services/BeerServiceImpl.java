@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,20 +37,22 @@ public class BeerServiceImpl implements BeerService {
     @Autowired
     private final Tracer tracer;
 
+    @Cacheable(cacheNames = "beerListCache", condition = "#showInventoryOnHand == false")
     @Override
     public BeerPagedList listBeers(String beerName, BeerStyleEnum beerStyle, PageRequest pageRequest, Boolean showInventoryOnHand) {
         log.debug("Listing Beers");
         BeerPagedList beerPagedList;
         Page<Beer> beerPage;
+        String beerStyleEnum = beerStyle != null ? beerStyle.toString() : "";
 
-        if (!Strings.isEmpty(beerName) && !Strings.isEmpty(beerStyle.toString())) {
+        if (!Strings.isEmpty(beerName) && !Strings.isEmpty(beerStyleEnum)) {
             //search both
             beerPage = beerRepository.findAllByBeerNameAndBeerStyle(beerName, beerStyle, pageRequest);
-        } else if (!Strings.isEmpty(beerName) && Strings.isEmpty(beerStyle.toString())) {
+        } else if (!Strings.isEmpty(beerName) && Strings.isEmpty(beerStyleEnum)) {
             //search beer_service name
             beerPage = beerRepository.findAllByBeerName(beerName, pageRequest);
         }
-        else if (Strings.isEmpty(beerName) && !Strings.isEmpty(beerStyle.toString())){
+        else if (Strings.isEmpty(beerName) && !Strings.isEmpty(beerStyleEnum)){
             beerPage = beerRepository.findAllByBeerStyle(beerStyle, pageRequest);
         }
         else {
@@ -122,6 +125,7 @@ public class BeerServiceImpl implements BeerService {
         return beerMapper.beerToBeerDto(beerOptional.get());
     }
 
+    @Cacheable(cacheNames = "beerCache")
     @Override
     public BeerDto findBeerByUpc(String upc) {
         return beerMapper.beerToBeerDto(beerRepository.findByUpc(upc));
